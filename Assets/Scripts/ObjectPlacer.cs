@@ -4,15 +4,25 @@ using UnityEngine;
 
 public class ObjectPlacer : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private List<GameObject> placedObjects = new List<GameObject>();
+
+    public int PlaceObject(GameObject prefab, Vector3 position)
     {
-        
+        GameObject newObject = Instantiate(prefab);
+        newObject.transform.position = position;
+        placedObjects.Add(newObject);
+        return placedObjects.Count - 1;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void RemoveObjectAt(int index)
     {
-        
+        if(placedObjects.Count <= index)
+        {
+            Debug.LogError("Trying to remove object that does not exist");
+            return;
+        }
+        Destroy(placedObjects[index]);
+        placedObjects[index] = null;
     }
 }

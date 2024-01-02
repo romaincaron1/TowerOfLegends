@@ -57,17 +57,22 @@ public class PreviewSystem : MonoBehaviour
         }
     }
 
-    public void StopShowingPlacementPreview()
+    public void StopShowingPreview()
     {
-        Destroy(previewObject);
         cellIndicator.SetActive(false);
+        if(cellIndicator != null)
+            Destroy(previewObject);
     }
 
     public void UpdatePosition(Vector3 position, bool validity)
     {
-        MovePreview(position);
+        if(previewObject != null)
+        {
+            MovePreview(position);
+            ApplyFeedbackToPreview(validity);
+        }
         MoveCursor(position);
-        ApplyFeedback(validity);
+        ApplyFeedbackToCursor(validity);
     }
 
     private void MovePreview(Vector3 position)
@@ -80,11 +85,24 @@ public class PreviewSystem : MonoBehaviour
         cellIndicator.transform.position = position;
     }
 
-    private void ApplyFeedback(bool validity)
+    private void ApplyFeedbackToPreview(bool validity)
+    {
+        Color c = validity ? Color.white : Color.red;
+        c.a = 0.05f;
+        previewMaterialInstance.color = c;
+    }
+
+    private void ApplyFeedbackToCursor(bool validity)
     {
         Color c = validity ? Color.white : Color.red;
         cellIndicatorRenderer.material.color = c;
         c.a = 0.05f;
-        previewMaterialInstance.color = c;
+    }
+
+    public void StartShowingRemovePreview()
+    {
+        cellIndicator.SetActive(true);
+        PrepareCursor(Vector2Int.one);
+        ApplyFeedbackToCursor(false);
     }
 }

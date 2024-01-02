@@ -30,8 +30,10 @@ public class GridData
             for (int y = 0; y < objectSize.y; y++)
             {
                 returnVal.Add(gridPosition + new Vector3Int(x, 0, y));
+    
             }
         }
+       
         return returnVal;
     }
 
@@ -40,12 +42,35 @@ public class GridData
         List<Vector3Int> positionToOccupy = CalculatePositions(gridPosition, objectSize);
         foreach (var pos in positionToOccupy)
         {
+            if (pos.x < -5 || pos.x >= 5 || pos.z < -5 || pos.z >= 5)
+            {
+                return false;
+            }
             if (PlacedObjects.ContainsKey(pos))
             {
                 return false;
             }
         }
         return true;
+    }
+
+    public int GetRepresentationIndex(Vector3Int gridPosition)
+    {
+        Debug.Log("GetRepresentationIndex");
+        Debug.Log(PlacedObjects.ContainsKey(gridPosition));
+        if(PlacedObjects.ContainsKey(gridPosition))
+        {
+            return PlacedObjects[gridPosition].PlacedObjectIndex;
+        }
+        return -1;
+    }
+
+    public void RemoveObjectAt(Vector3Int gridPosition)
+    {
+        foreach (var pos in PlacedObjects[gridPosition].occupiedPositions)
+        {
+            PlacedObjects.Remove(pos);
+        }
     }
 }
 
