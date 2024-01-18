@@ -1,29 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI; // Nécessaire pour accéder aux fonctionnalités de NavMesh
+using UnityEngine.AI;
 
-public class EnemyMovement : MonoBehaviour
+public class Enemy : MonoBehaviour
 {
-    private NavMeshAgent agent; // Référence à l'agent de navigation
-    private Transform target; // La cible actuelle
+    private NavMeshAgent agent;
+    private Transform target;
+    [SerializeField] float health, maxHealth = 3f;
+    [SerializeField] FloatingHealthBar healthBar;
+
+    void Awake()
+    {
+        healthBar = GetComponentInChildren<FloatingHealthBar>();
+    }
 
     void Start()
     {
-        agent = GetComponent<NavMeshAgent>(); // Récupération du composant NavMeshAgent
-        target = FindNearestDefenseObject(); // Trouver la cible la plus proche au démarrage
+        
+            health = maxHealth;
+            healthBar.UpdateHealthBar(health, maxHealth);
+            agent = GetComponent<NavMeshAgent>();
+            target = FindNearestDefenseObject();
+        
     }
 
     void Update()
     {
-        // Si nous avons une cible, déplacer l'ennemi vers cette cible
-        if(target != null)
+        if(!GameManager.instance.isGameStarted)
+        {
+            return;
+        }
+        if(target != null && agent != null)
         {
             agent.SetDestination(target.position);
         }
         else
         {
-            // Si la cible est nulle, tenter de trouver une nouvelle cible
             target = FindNearestDefenseObject();
         }
     }
@@ -45,5 +58,15 @@ public class EnemyMovement : MonoBehaviour
         }
 
         return nearestDefense;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        healthBar.UpdateHealthBar(health, maxHealth);
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }

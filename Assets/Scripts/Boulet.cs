@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Boulet : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public int damage = 1;
+    
     void Awake()
     {
         Destroy(gameObject, 3);
@@ -14,7 +15,11 @@ public class Boulet : MonoBehaviour
     {
         if (collision.gameObject.tag == "enemy")
         {
-            Destroy(collision.gameObject);
+            Enemy enemy = collision.gameObject.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+            }
             Destroy(gameObject);
         }
     }

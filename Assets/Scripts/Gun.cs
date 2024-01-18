@@ -18,6 +18,11 @@ public class Gun : MonoBehaviour
 
     void Update()
     {
+        if(!GameManager.instance.isGameStarted)
+        {
+            return;
+        }
+        
         fireTimer += Time.deltaTime;
         GameObject nearestEnemy = FindNearestEnemy();
         if(fireTimer >= fireRate)
