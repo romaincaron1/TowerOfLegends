@@ -21,3 +21,7 @@ MonoBehaviour:
     <ID>k__BackingField: 1
     <Size>k__BackingField: {x: 2, y: 2}
     <Prefab>k__BackingField: {fileID: 5330781648685491773, guid: a0983b02538eb7242aac4275763aaa7c, type: 3}
+  - <Name>k__BackingField: Rampart
+    <ID>k__BackingField: 2
+    <Size>k__BackingField: {x: 1, y: 1}
+    <Prefab>k__BackingField: {fileID: 3839235593584487745, guid: 291394a3d02755e41a207f1142915f9c, type: 3}
