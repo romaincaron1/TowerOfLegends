@@ -46,7 +46,6 @@ public class PlacementState : IBuildingState
         Vector2Int buildingSize = database.objectsData[selectedObjectIndex].Size;
         Vector3 offset = new Vector3(buildingSize.x * 2.5f, 0f, buildingSize.y * 2.5f);
         Vector3 cellCenterPosition = grid.CellToWorld(gridPosition) + offset;
-        Debug.Log("Placing object at: " + gridPosition);
 
         int index = objectPlacer.PlaceObject(database.objectsData[selectedObjectIndex].Prefab, cellCenterPosition);
         
@@ -54,6 +53,7 @@ public class PlacementState : IBuildingState
         selectedData.AddObject(gridPosition, database.objectsData[selectedObjectIndex].Size, database.objectsData[selectedObjectIndex].ID, index);
 
         previewSystem.UpdatePosition(cellCenterPosition, false);
+        ResourceManager.instance.SpendCoins(database.objectsData[selectedObjectIndex].Price);
     }
 
     private bool CheckPlacementValidity(Vector3Int gridPosition, int selectedObjectIndex)
@@ -66,11 +66,9 @@ public class PlacementState : IBuildingState
     {
         bool placementValiditiy = CheckPlacementValidity(gridPosition, selectedObjectIndex);
 
-            // Ajoutez un décalage ici pour centrer le rectangle sur la cellule*
         Vector2Int buildingSize = database.objectsData[selectedObjectIndex].Size;
         Vector3 offset = new Vector3(buildingSize.x * 2.5f, 0f, buildingSize.y * 2.5f);
         Vector3 cellCenterPosition = grid.CellToWorld(gridPosition)+ offset;
-        // Assurez-vous que le rectangle est positionné au centre de la cellule
 
         previewSystem.UpdatePosition(cellCenterPosition, placementValiditiy);
     }

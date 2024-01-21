@@ -8,7 +8,7 @@ public class PlacementSystem : MonoBehaviour
     private InputManager inputManager;
 
     [SerializeField]
-    private Grid grid;
+    public Grid grid;
 
     [SerializeField]
     private ObjectsDatabaseSO objectsDatabase;
@@ -27,6 +27,20 @@ public class PlacementSystem : MonoBehaviour
     private ObjectPlacer objectPlacer;
 
     IBuildingState buildingState;
+    private int buildingID;
+    public static PlacementSystem instance;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -38,6 +52,7 @@ public class PlacementSystem : MonoBehaviour
     {
         StopPlacement();
         gridVisualiazation.SetActive(true);
+        buildingID = ID;
         buildingState = new PlacementState(ID, grid, previewSystem, objectsDatabase, gridData, objectPlacer);
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
@@ -61,7 +76,10 @@ public class PlacementSystem : MonoBehaviour
         Vector3 mousePosition = inputManager.GetSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
 
-        buildingState.OnAction(gridPosition);
+        if(ResourceManager.instance.CanAfford(objectsDatabase.objectsData[buildingID].Price))
+        {
+            buildingState.OnAction(gridPosition);
+        }
     }
 
     public void StopPlacement()
@@ -76,7 +94,25 @@ public class PlacementSystem : MonoBehaviour
         inputManager.OnExit -= StopPlacement;
         lastDetectedPosition = Vector3Int.zero;        
         buildingState = null;
-    }   
+    }
+    public void ClearGrid()
+    {
+        objectPlacer.RemoveAllObjects();
+        gridData.ClearAllData();
+    }
+
+    public void RemoveObjectAtGridPosition(Vector3Int gridPosition)
+    {
+        if (!gridData.canPlaceObjectAt(gridPosition, Vector2Int.one))
+        {
+            int objectIndex = gridData.GetRepresentationIndex(gridPosition);
+            if (objectIndex != -1)
+            {
+                gridData.RemoveObjectAt(gridPosition);
+                objectPlacer.RemoveObjectAt(objectIndex);
+            }
+        }
+    }
 
     void Update()
     {
@@ -93,6 +129,14 @@ public class PlacementSystem : MonoBehaviour
             buildingState.UpdateState(gridPosition);
             lastDetectedPosition = gridPosition;
         }
-    }
 
+        if(gridData.HasAnyObject())
+        {
+            GameManager.instance.startable = true;
+        }
+        else
+        {
+            GameManager.instance.startable = false;
+        }
+    }
 }

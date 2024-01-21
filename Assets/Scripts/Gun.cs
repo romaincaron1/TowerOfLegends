@@ -42,6 +42,7 @@ public class Gun : MonoBehaviour
         else
         {
             transform.rotation = Quaternion.identity;
+            GameManager.instance.EndGame();
         }
     }
 

@@ -56,8 +56,6 @@ public class GridData
 
     public int GetRepresentationIndex(Vector3Int gridPosition)
     {
-        Debug.Log("GetRepresentationIndex");
-        Debug.Log(PlacedObjects.ContainsKey(gridPosition));
         if(PlacedObjects.ContainsKey(gridPosition))
         {
             return PlacedObjects[gridPosition].PlacedObjectIndex;
@@ -71,6 +69,22 @@ public class GridData
         {
             PlacedObjects.Remove(pos);
         }
+    }
+
+    public List<PlacementData> GetAllPlacedObjects()
+    {
+        return new List<PlacementData>(PlacedObjects.Values);
+    }
+
+    public bool HasAnyObject()
+    {
+        return PlacedObjects.Count > 0;
+    }
+
+
+    public void ClearAllData()
+    {
+        PlacedObjects.Clear();
     }
 }
 
