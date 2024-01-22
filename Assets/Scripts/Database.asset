@@ -17,12 +17,12 @@ MonoBehaviour:
     <ID>k__BackingField: 0
     <Size>k__BackingField: {x: 1, y: 1}
     <Prefab>k__BackingField: {fileID: 1298033479232976349, guid: 855fd51805b88d1459b24afa62ba46f5, type: 3}
-    <Price>k__BackingField: 1
+    <Price>k__BackingField: 2
   - <Name>k__BackingField: Tour
     <ID>k__BackingField: 1
     <Size>k__BackingField: {x: 2, y: 2}
     <Prefab>k__BackingField: {fileID: 3244790698965746452, guid: d7e48b81adbd98c4c9d977887fbcf2d4, type: 3}
-    <Price>k__BackingField: 2
+    <Price>k__BackingField: 3
   - <Name>k__BackingField: Rampart
     <ID>k__BackingField: 2
     <Size>k__BackingField: {x: 1, y: 1}

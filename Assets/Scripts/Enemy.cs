@@ -69,24 +69,4 @@ public class Enemy : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log("Triggered");
-        if(collision.gameObject.CompareTag("defense"))
-        {
-            Vector3Int gridPosition = ConvertWorldToGridPosition(collision.gameObject.transform.position);
-            RemoveDefenseAtGridPosition(gridPosition);
-        }
-    }
-
-    private Vector3Int ConvertWorldToGridPosition(Vector3 worldPosition)
-    {
-        return PlacementSystem.instance.grid.WorldToCell(worldPosition);
-    }
-
-    private void RemoveDefenseAtGridPosition(Vector3Int gridPosition)
-    {
-        PlacementSystem.instance.StartRemoving();
-    }
 }

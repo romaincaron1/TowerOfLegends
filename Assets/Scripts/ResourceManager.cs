@@ -19,7 +19,7 @@ public class ResourceManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        coins = 10;
+        coins = 20;
     }
 
     void Start()
@@ -49,7 +49,7 @@ public class ResourceManager : MonoBehaviour
 
     public void ResetCoinsToInitialValue()
     {
-        coins = 10;
+        coins = 20;
         GameManager.instance.UpdateCoinsDisplay(coins);
     }
 }

@@ -7,8 +7,8 @@ public class Gun : MonoBehaviour
     public Transform bulletSpawnPoint;
     public GameObject bulletPrefab;
     public float bulletSpeed = 20;
-    public float fireRate = 2.0f; // Temps en secondes entre chaque tir
-    private float fireTimer; // Un compteur pour le rythme de tir
+    public float fireRate = 2.0f;
+    private float fireTimer;
 
     void FireCannon()
     {
@@ -25,15 +25,10 @@ public class Gun : MonoBehaviour
         
         fireTimer += Time.deltaTime;
         GameObject nearestEnemy = FindNearestEnemy();
-        if(fireTimer >= fireRate)
+        if(fireTimer >= fireRate && nearestEnemy != null && bulletPrefab != null)
         {
             fireTimer = 0f;
-            
-            
-            if(nearestEnemy != null)
-            {
-                FireAtEnemy(nearestEnemy);
-            }
+            FireAtEnemy(nearestEnemy);
         }
         if(nearestEnemy != null)
         {
@@ -42,7 +37,6 @@ public class Gun : MonoBehaviour
         else
         {
             transform.rotation = Quaternion.identity;
-            GameManager.instance.EndGame();
         }
     }
 
@@ -77,16 +71,25 @@ public class Gun : MonoBehaviour
     {
         Vector3 directionToTarget = (target.position - transform.position).normalized;
         directionToTarget.y = 0;
+        if(directionToTarget == Vector3.zero)
+        {
+            return;
+        }
         Quaternion lookRotation = Quaternion.LookRotation(directionToTarget);
         
-        // Créez une rotation de 90 degrés autour de l'axe Y
         Quaternion correction = Quaternion.Euler(0, 90, 0);
         
-        // Appliquez d'abord la correction puis la rotation vers la cible
         lookRotation *= correction;
 
-        // Appliquez la rotation corrigée au canon
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Collision" + collision.gameObject.tag);
+        if (collision.gameObject.CompareTag("enemy"))
+        {
+            Destroy(gameObject);
+        }
+    }
 }

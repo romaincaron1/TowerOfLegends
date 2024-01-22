@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     [SerializeField]
-    public GameObject victoryPanel;
+    public GameObject EndPanel;
 
     [SerializeField]
     public PlacementSystem placementSystem;
@@ -33,10 +33,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private float spawnDuration = 30.0f;
-
     private float spawnRate = 2.0f;
-
     public bool startable = false;
+    private float startTime;
 
     void Awake()
     {
@@ -53,13 +52,14 @@ public class GameManager : MonoBehaviour
     public void PrepareGame()
     {
         isGameStarted = false;
+        DestroyAllEnemies();
         placementSystem.ClearGrid();
         placementSystem.enabled = true;
         foreach (var button in buttonsToDisable)
         {
             button.interactable = true;
         }
-        victoryPanel.SetActive(false);
+        EndPanel.SetActive(false);
         ResourceManager.instance.ResetCoinsToInitialValue();
     }
 
@@ -70,6 +70,7 @@ public class GameManager : MonoBehaviour
             return;
         }
         isGameStarted = true;
+        startTime = Time.time;
         AdjustSpawnRateBasedOnDifficulty();
         StartCoroutine(SpawnEnemies());
         placementSystem.StopPlacement();
@@ -115,9 +116,54 @@ public class GameManager : MonoBehaviour
     {
         coinsText.text = coins.ToString();
     }
-
-    public void EndGame()
+    
+    private void DestroyAllEnemies()
     {
-        victoryPanel.SetActive(true);
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("enemy");
+        foreach (GameObject enemy in enemies)
+        {
+            Destroy(enemy);
+        }
+    }
+
+    public void EndGame(bool isWin)
+    {
+        if(isWin)
+        {
+            EndPanel.transform.Find("EndText").GetComponent<TMP_Text>().text = "Victoire !";
+        }
+        else
+        {
+            EndPanel.transform.Find("EndText").GetComponent<TMP_Text>().text = "Défaite !";
+        }
+        isGameStarted = false;
+        EndPanel.SetActive(true);
+    }
+
+    private bool AreDefensesPresent()
+    {
+        GameObject[] defenses = GameObject.FindGameObjectsWithTag("defense");
+        return defenses.Length > 0;
+    }
+
+    private bool AreEnemysPresent()
+    {
+        GameObject[] enemys = GameObject.FindGameObjectsWithTag("enemy");
+        return enemys.Length > 0;
+    }
+
+    void Update()
+    {
+        if (isGameStarted)
+        {
+            if(!AreDefensesPresent())
+            {
+                EndGame(false);
+            }
+            else if (Time.time - startTime > spawnDuration && !AreEnemysPresent())
+            {
+                EndGame(true);
+            }
+        }
     }
 }
